@@ -1,17 +1,46 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { fetchPayments, type Payment } from "../api/payment";
 
 const Payments = () => {
   const [datas, setDatas] = useState<Payment[]>([]);
+  const [search, setSearch] = useState<String>('')
+  const [trigger, setTrigger] = useState<String>('')
+  const [dropStatus, setDropStatus] = useState<String>('')
+
+//   const searchRef = useRef(null)
+
+    useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+        setTrigger(search)
+    }, 300)
+    return () => clearTimeout(delayDebounceFn)
+  }, [setSearch])
+
+//   const handleSearch = () => {
+//     const seconds = 300
+
+    
+
+//   }
 
   useEffect(() => {
+
     fetchPayments().then((data: Payment[]) => setDatas(data));
+
   }, []);
+
 
   return (
     <div>
       Payments Table
-      <input type="text" placeholder="Search Box" />
+      <input type="text" placeholder="Search Box" onChange={(e) => setSearch(e.target.value)} />
+      <select name="" id="" onChange={(e) => setDropStatus(e.target.value)}>
+        <option value="all">All</option>
+        <option value="completed">Completed</option>
+        <option value="pending">Pending</option>
+        <option value="failed">Failed</option>
+        <option value="refunded">Refunded</option>
+      </select>
       <br />
       <br />
       <table>
@@ -23,7 +52,11 @@ const Payments = () => {
           <th>Method</th>
           <th>Created</th>
         </tr>
+        {(() => {
+            if (dropStatus === "all") return 
+        })()}
         {datas.map((items) => (
+
           <tr>
             <>
               <td key={items.id}>{items.reference}</td>
